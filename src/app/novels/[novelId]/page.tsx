@@ -34,6 +34,7 @@ export default async function NovelPage({ params }: Props) {
 
   return (
     <main className="py-10">
+      {/* breadcrumbs */}
       <p className="px-10 font-inter text-sm font-extralight">
         <Link href="/novels">Novels</Link> / {novel.title}
       </p>

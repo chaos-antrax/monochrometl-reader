@@ -15,7 +15,7 @@ export function LibraryButton({
   const [pending, setPending] = useState(false);
   async function toggle() {
     if (!authenticated) {
-      location.href = "/login";
+      location.href = '/signin';
       return;
     }
     setPending(true);
