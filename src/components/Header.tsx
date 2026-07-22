@@ -5,7 +5,7 @@ import { Sun, Moon } from "lucide-react";
 
 const Header = () => {
   return (
-    <nav className="flex justify-between items-center font-lora p-4">
+    <nav className="flex justify-between items-center font-lora p-4 sticky top-0 z-50 backdrop-blur-3xl">
       <div>
         <Button href="/" className="flex gap-4 items-center text">
           <Image
