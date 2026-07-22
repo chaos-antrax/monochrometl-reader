@@ -21,8 +21,8 @@ const Header = () => {
         <Button href="/novels" className="hidden md:block">
           Browse
         </Button>
-        <Button href="/signin" className="hidden md:block">
-          Sign In
+        <Button href="/library" className="hidden md:block">
+          Library
         </Button>
         <Button>
           <Sun size={20} />

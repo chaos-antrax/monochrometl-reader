@@ -16,11 +16,11 @@ export default function Home() {
         ~ an inititaive by antrax
       </p>
       <div className="flex gap-4 md:gap-10 xl:justify-center mt-10 px-10 md:px-16">
-        <Button type="block" className="block md:hidden">
+        <Button btnType="block" className="block md:hidden">
           Browse
         </Button>
-        <Button type="block" href="/signup">
-          Sign In
+        <Button btnType="block" href="/signup">
+          Sign Up
         </Button>
       </div>
     </div>
