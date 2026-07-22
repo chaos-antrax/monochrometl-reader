@@ -16,8 +16,11 @@ export default async function Novels() {
   return (
     <>
       <div className="p-10">
-        <h1 className="text-4xl font-lora"> Browse Novels</h1>
-        <p className="font-inter mt-1"> See what the community has to offer.</p>
+        <p className="font-inter text-xs uppercase tracking-[0.22em] font-extralight">
+          what's on the table
+        </p>
+        <h1 className="text-4xl font-lora mt-4"> Browse Novels</h1>
+        {/* <p className="font-inter mt-1"> See what's on the table.</p> */}
       </div>
       {novels.length ? (
         <div className="flex flex-col gap-2">

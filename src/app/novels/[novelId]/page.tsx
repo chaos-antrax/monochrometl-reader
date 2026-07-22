@@ -44,7 +44,7 @@ export default async function NovelPage({ params }: Props) {
           <BookText size={104} strokeWidth={0.1} />
         </div>
         <div className="flex flex-col gap-4">
-          <p className="items-center hidden justify-end md:flex">
+          <p className="items-center hidden justify-end md:flex text-xs uppercase tracking-[0.22em] font-extralight">
             {novel.chapterCount} translated chapters
           </p>
           <h1 className="font-lora text-3xl">{novel.title}</h1>
