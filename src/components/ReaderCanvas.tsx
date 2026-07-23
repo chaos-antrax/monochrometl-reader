@@ -81,6 +81,7 @@ type Props = {
   chapters: PublicChapterSummary[];
   initialSettings: ReaderSettings;
   authenticated: boolean;
+  initialScrollProgress: number;
 };
 
 export default function ReaderCanvas({
@@ -88,6 +89,7 @@ export default function ReaderCanvas({
   chapters,
   initialSettings,
   authenticated,
+  initialScrollProgress,
 }: Props) {
   const [settings, setSettings] = useState<ReaderSettings>(initialSettings);
   const [localReady, setLocalReady] = useState(authenticated);
@@ -142,31 +144,33 @@ export default function ReaderCanvas({
     return () => clearTimeout(timer);
   }, [settings, authenticated, localReady]);
   useEffect(() => {
+    if (initialScrollProgress <= 0) return;
+    let second = 0;
+    const first = requestAnimationFrame(() => {
+      second = requestAnimationFrame(() => {
+        const height = document.documentElement.scrollHeight - window.innerHeight;
+        window.scrollTo({ top: height * initialScrollProgress, behavior: 'instant' });
+      });
+    });
+    return () => { cancelAnimationFrame(first); cancelAnimationFrame(second); };
+  }, [initialScrollProgress]);
+  useEffect(() => {
     if (!authenticated) return;
     let timer: ReturnType<typeof setTimeout>;
-    const save = () => {
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        const height =
-          document.documentElement.scrollHeight - window.innerHeight;
-        const scrollProgress = height > 0 ? window.scrollY / height : 1;
-        fetch(`/api/progress/${chapter.novelId}`, {
-          method: "PUT",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({
-            chapterId: chapter.id,
-            chapterOrder: chapter.order,
-            scrollProgress,
-          }),
-          keepalive: true,
-        });
-      }, 700);
+    const send = () => {
+      const height = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollProgress = height > 0 ? window.scrollY / height : 1;
+      fetch(`/api/progress/${chapter.novelId}`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ chapterId: chapter.id, chapterOrder: chapter.order, scrollProgress }), keepalive: true });
     };
-    window.addEventListener("scroll", save, { passive: true });
-    save();
+    const schedule = () => { clearTimeout(timer); timer = setTimeout(send, 700); };
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('pagehide', send);
+    schedule();
     return () => {
-      window.removeEventListener("scroll", save);
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('pagehide', send);
       clearTimeout(timer);
+      send();
     };
   }, [authenticated, chapter.id, chapter.novelId, chapter.order]);
   const update = <K extends keyof ReaderSettings>(

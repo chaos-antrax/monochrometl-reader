@@ -16,7 +16,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { novelId } = await params;
   const novel = await getPublishedNovelDetail(novelId);
   return novel
-    ? { title: novel.title, description: novel.description.slice(0, 160) }
+    ? {
+        title: novel.title,
+        description: novel.description.slice(0, 160),
+        alternates: { canonical: `/novels/${novel.id}` },
+        openGraph: {
+          type: "website",
+          title: novel.title,
+          description: novel.description.slice(0, 160),
+          url: `/novels/${novel.id}`,
+        },
+      }
     : { title: "Novel not found" };
 }
 

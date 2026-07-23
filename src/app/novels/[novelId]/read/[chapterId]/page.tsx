@@ -9,6 +9,7 @@ import {
   getPublishedNovelDetail,
 } from "@/lib/published-content";
 import { getReaderSettings } from "@/lib/reader-settings";
+import { getProgress } from "@/lib/reader-progress";
 
 type Props = { params: Promise<{ novelId: string; chapterId: string }> };
 
@@ -20,6 +21,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ? {
         title: `${chapter.title} — ${chapter.novelTitle}`,
         description: `Read ${chapter.title} from ${chapter.novelTitle}.`,
+        alternates: { canonical: `/novels/${novelId}/read/${chapterId}` },
+        openGraph: {
+          type: 'article',
+          title: `${chapter.title} - ${chapter.novelTitle}`,
+          description: `Read ${chapter.title} from ${chapter.novelTitle}.`,
+          url: `/novels/${novelId}/read/${chapterId}`,
+        },
       }
     : { title: "Chapter not found" };
 }
@@ -33,15 +41,16 @@ export default async function ReaderPage({ params }: Props) {
     getCurrentUser(),
   ]);
   if (!chapter || !novel) notFound();
-  const settings = user
-    ? await getReaderSettings(user.id)
-    : DEFAULT_READER_SETTINGS;
+  const [settings, progress] = user
+    ? await Promise.all([getReaderSettings(user.id), getProgress(user.id, novelId)])
+    : [DEFAULT_READER_SETTINGS, null];
   return (
     <ReaderCanvas
       chapter={chapter}
       chapters={novel.chapters}
       initialSettings={settings}
       authenticated={Boolean(user)}
+      initialScrollProgress={progress?.chapterId === chapter.id ? progress.scrollProgress : 0}
     />
   );
 }

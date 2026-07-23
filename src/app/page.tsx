@@ -12,8 +12,8 @@ export default function Home() {
           Sharing AI translated daily reads with the community.
         </p>
       </main>
-      <p className="font-inter text-sm font-extralight bottom-4 absolute right-4">
-        ~ an inititaive by antrax
+      <p className="font-inter uppercase tracking-widest text-[10px] font-extralight bottom-4 absolute right-4">
+        ~ antrax
       </p>
       <div className="flex gap-4 md:gap-10 xl:justify-center mt-10 px-10 md:px-16">
         <Button btnType="block" href="/novels" className="block md:hidden">

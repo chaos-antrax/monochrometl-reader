@@ -8,6 +8,12 @@ import NovelCard from "@/components/NovelCard";
 export const metadata: Metadata = {
   title: "Browse novels",
   description: "Browse available translations on Monochrome Translations.",
+  alternates: { canonical: "/novels" },
+  openGraph: {
+    title: "Browse novels",
+    description: "Browse available translations on Monochrome Translations.",
+    url: "/novels",
+  },
 };
 
 export default async function Novels() {

@@ -1,0 +1,2 @@
+import Link from 'next/link';
+export default function NotFound() { return <main className='flex min-h-[65vh] items-center justify-center px-6'><section className='text-center'><p className='font-inter text-[10px] uppercase tracking-[0.22em] font-extralight'>404</p><h1 className='mt-4 font-lora text-4xl'>This page is off the shelf.</h1><Link href='/novels' className='mt-8 inline-block border border-foreground/15 px-7 py-3 font-inter text-xs'>Browse novels</Link></section></main>; }

@@ -1,42 +1,10 @@
-import { getDatabase } from "@/lib/db";
-import { getPublishedNovelSummaries } from "@/lib/published-content";
-export async function getReaderLibrary(userId: string) {
-  const entries = await (await getDatabase())
-    .collection<{ userId: string; novelId: string }>("readerLibrary")
-    .find({ userId })
-    .sort({ updatedAt: -1 })
-    .toArray();
-  const order = new Map(entries.map((item, index) => [item.novelId, index]));
-  return (await getPublishedNovelSummaries())
-    .filter((novel) => order.has(novel.id))
-    .sort((a, b) => order.get(a.id)! - order.get(b.id)!);
-}
-export async function addNovelToLibrary(userId: string, novelId: string) {
-  const db = await getDatabase();
-  if (
-    !(await db
-      .collection("novels")
-      .findOne({ id: novelId, published: true }, { projection: { _id: 1 } }))
-  )
-    throw new Error("Novel not found.");
-  const now = new Date();
-  await db
-    .collection("readerLibrary")
-    .updateOne(
-      { userId, novelId },
-      { $set: { updatedAt: now }, $setOnInsert: { addedAt: now } },
-      { upsert: true },
-    );
-}
-export async function removeNovelFromLibrary(userId: string, novelId: string) {
-  await (await getDatabase())
-    .collection("readerLibrary")
-    .deleteOne({ userId, novelId });
-}
-export async function isNovelInLibrary(userId: string, novelId: string) {
-  return Boolean(
-    await (await getDatabase())
-      .collection("readerLibrary")
-      .findOne({ userId, novelId }, { projection: { _id: 1 } }),
-  );
-}
+import { getDatabase } from '@/lib/db';
+import { getPublishedNovelSummaries } from '@/lib/published-content';
+import type { PublicNovelSummary } from '@/types/content';
+
+export type ReaderLibraryNovel=PublicNovelSummary&{progress?:{chapterId:string;chapterOrder:number;chapterTitle:string;scrollProgress:number}};
+
+export async function getReaderLibrary(userId:string):Promise<ReaderLibraryNovel[]>{const db=await getDatabase();const entries=await db.collection<{userId:string;novelId:string}>('readerLibrary').find({userId}).sort({updatedAt:-1}).toArray();const order=new Map(entries.map((item,index)=>[item.novelId,index]));const novels=(await getPublishedNovelSummaries()).filter((novel)=>order.has(novel.id)).sort((a,b)=>order.get(a.id)!-order.get(b.id)!);if(!novels.length)return[];const progress=await db.collection<{novelId:string;chapterId:string;chapterOrder:number;scrollProgress:number}>('readerProgress').find({userId,novelId:{$in:novels.map((novel)=>novel.id)}}).toArray();const chapterIds=progress.map((item)=>item.chapterId);const chapters=chapterIds.length?await db.collection<{id:string;title:string}>('chapters').find({id:{$in:chapterIds},published:true,publishedVersion:{$type:'number'}},{projection:{_id:0,id:1,title:1}}).toArray():[];const titles=new Map(chapters.map((chapter)=>[chapter.id,chapter.title]));const byNovel=new Map(progress.flatMap((item)=>{const chapterTitle=titles.get(item.chapterId);return chapterTitle?[[item.novelId,{chapterId:item.chapterId,chapterOrder:item.chapterOrder,chapterTitle,scrollProgress:item.scrollProgress}] as const]:[]}));return novels.map((novel)=>({...novel,progress:byNovel.get(novel.id)}))}
+export async function addNovelToLibrary(userId:string,novelId:string){const db=await getDatabase();if(!await db.collection('novels').findOne({id:novelId,published:true},{projection:{_id:1}}))throw new Error('Novel not found.');const now=new Date();await db.collection('readerLibrary').updateOne({userId,novelId},{$set:{updatedAt:now},$setOnInsert:{addedAt:now}},{upsert:true})}
+export async function removeNovelFromLibrary(userId:string,novelId:string){await(await getDatabase()).collection('readerLibrary').deleteOne({userId,novelId})}
+export async function isNovelInLibrary(userId:string,novelId:string){return Boolean(await(await getDatabase()).collection('readerLibrary').findOne({userId,novelId},{projection:{_id:1}}))}
