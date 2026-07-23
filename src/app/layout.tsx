@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ViewTransition } from "react";
 import { Geist, Geist_Mono, Inter, Lora } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
@@ -40,7 +41,9 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <ThemeProvider>
           <Header />
-          {children}
+          <ViewTransition enter="page-enter" exit="page-exit">
+            {children}
+          </ViewTransition>
           <GlobalThemeToggle />
         </ThemeProvider>
       </body>

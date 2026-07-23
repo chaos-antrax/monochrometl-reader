@@ -19,6 +19,7 @@ import type {
   ReaderTheme,
 } from "@/types/reader";
 import { READER_SETTINGS_STORAGE_KEY } from "@/lib/constants";
+import useAnimatedPresence from "@/hooks/useAnimatedPresence";
 
 const backgrounds: {
   id: ReaderBackground;
@@ -94,6 +95,7 @@ export default function ReaderCanvas({
   const [settings, setSettings] = useState<ReaderSettings>(initialSettings);
   const [localReady, setLocalReady] = useState(authenticated);
   const [panel, setPanel] = useState<"settings" | "chapters" | null>(null);
+  const panelPresence = useAnimatedPresence(panel);
   const hydrated = useRef(false);
   const { resolvedTheme, setTheme } = useTheme();
   const dark = resolvedTheme === "dark";
@@ -243,17 +245,19 @@ export default function ReaderCanvas({
         </button>
       </div>
 
-      {panel && (
+      {panelPresence.mounted && (
         <button
+          data-motion-state={panelPresence.state}
           aria-label="Close reader panel"
           onClick={() => setPanel(null)}
-          className="fixed inset-0 z-40 bg-black/30 cursor-default"
+          className="motion-overlay fixed inset-0 z-40 bg-black/30 cursor-default"
         />
       )}
-      {panel === "chapters" && (
+      {panelPresence.value === "chapters" && (
         <aside
+          data-motion-state={panelPresence.state}
           aria-label="Chapter selector"
-          className="fixed z-50 inset-y-0 right-0 w-[min(92vw,26rem)] shadow-2xl flex flex-col"
+          className="motion-drawer fixed z-50 inset-y-0 right-0 w-[min(92vw,26rem)] shadow-2xl flex flex-col"
           style={{ background: canvasBackground, color: canvasText }}
         >
           <div className="flex items-start justify-between p-6 border-b border-current/10">
@@ -289,10 +293,11 @@ export default function ReaderCanvas({
           </div>
         </aside>
       )}
-      {panel === "settings" && (
+      {panelPresence.value === "settings" && (
         <aside
+          data-motion-state={panelPresence.state}
           aria-label="Reader settings"
-          className="fixed z-50 inset-y-0 right-0 w-[min(92vw,26rem)] shadow-2xl overflow-y-auto"
+          className="motion-drawer fixed z-50 inset-y-0 right-0 w-[min(92vw,26rem)] shadow-2xl overflow-y-auto"
           style={{ background: canvasBackground, color: canvasText }}
         >
           <div className="flex items-start justify-between p-6 border-b border-current/10">

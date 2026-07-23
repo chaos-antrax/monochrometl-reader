@@ -35,7 +35,7 @@ export default function AccountTabs({
       </div>
       {tab === "profile" ? (
         <>
-          <section className="grid md:grid-cols-[1.4fr_1fr] gap-12 md:gap-12 xl:gap-16 py-12 md:py-8">
+          <section className="motion-content grid md:grid-cols-[1.4fr_1fr] gap-12 md:gap-12 xl:gap-16 py-12 md:py-8">
             <div>
               <h2 className="font-lora text-2xl mb-8 md:mb-4">Profile</h2>
               <dl className="divide-y divide-foreground/10 border-y border-foreground/10">
@@ -107,7 +107,7 @@ export default function AccountTabs({
           </section>
         </>
       ) : (
-        <section className="py-10 md:py-5 max-w-4xl">
+        <section className="motion-content py-10 md:py-5 max-w-4xl">
           <p className="font-inter text-xs uppercase tracking-[0.18em] font-extralight">
             Reading experience
           </p>
