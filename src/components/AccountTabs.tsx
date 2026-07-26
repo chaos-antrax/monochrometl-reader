@@ -6,6 +6,8 @@ import LogoutButton from "@/components/LogoutButton";
 import AccountPreferences from "@/components/AccountPreferences";
 import type { ReaderSettings } from "@/types/reader";
 import type { ReaderUser } from "@/types/user";
+import UsernameSettings from "@/components/UsernameSettings";
+import ActivityPanel from "@/components/ActivityPanel";
 
 export default function AccountTabs({
   user,
@@ -16,7 +18,7 @@ export default function AccountTabs({
   joined: string | null;
   settings: ReaderSettings;
 }) {
-  const [tab, setTab] = useState<"profile" | "preferences">("profile");
+  const [tab, setTab] = useState<"profile" | "preferences" | "activity">("profile");
   return (
     <>
       <div className="flex gap-8 border-b border-foreground/10 font-inter text-xs uppercase tracking-[0.18em] font-extralight">
@@ -31,6 +33,12 @@ export default function AccountTabs({
           className={`pb-3 cursor-pointer ${tab === "preferences" ? "border-b border-foreground" : ""}`}
         >
           Preferences
+        </button>
+        <button
+          onClick={() => setTab("activity")}
+          className={`pb-3 cursor-pointer ${tab === "activity" ? "border-b border-foreground" : ""}`}
+        >
+          Activity
         </button>
       </div>
       {tab === "profile" ? (
@@ -60,6 +68,7 @@ export default function AccountTabs({
                   </div>
                 )}
               </dl>
+              <UsernameSettings initialUsername={user.username} />
             </div>
             <div>
               <h2 className="font-lora text-2xl mb-8 md:mb-4">Reading</h2>
@@ -106,7 +115,7 @@ export default function AccountTabs({
             </div>
           </section>
         </>
-      ) : (
+      ) : tab === "preferences" ? (
         <section className="motion-content py-10 md:py-5 max-w-4xl">
           <p className="font-inter text-xs uppercase tracking-[0.18em] font-extralight">
             Reading experience
@@ -119,6 +128,8 @@ export default function AccountTabs({
           </p>
           <AccountPreferences initialSettings={settings} />
         </section>
+      ) : (
+        <ActivityPanel />
       )}
     </>
   );

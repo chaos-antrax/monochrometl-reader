@@ -31,5 +31,11 @@ async function ensureIndexes(database: Db) {
     database.collection('readerSettings').createIndex({ userId: 1 }, { unique: true, name: 'reader_settings_user' }),
     database.collection('users').createIndex({ email: 1 }, { unique: true }),
     database.collection('authRateLimits').createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0, name: 'auth_rate_limits_ttl' }),
+    database.collection('users').createIndex({ usernameNormalized: 1 }, { unique: true, partialFilterExpression: { usernameNormalized: { $type: 'string' } }, name: 'users_username_unique' }),
+    database.collection('readerReviews').createIndex({ novelId: 1, createdAt: -1 }, { name: 'reader_reviews_latest' }),
+    database.collection('readerReviews').createIndex({ parentId: 1, createdAt: 1 }, { name: 'reader_review_replies' }),
+    database.collection('readerReviews').createIndex({ userId: 1, novelId: 1 }, { unique: true, partialFilterExpression: { topLevel: true }, name: 'reader_review_user_novel' }),
+    database.collection('readerComments').createIndex({ chapterId: 1, createdAt: -1 }, { name: 'reader_comments_latest' }),
+    database.collection('readerComments').createIndex({ parentId: 1, createdAt: 1 }, { name: 'reader_comment_replies' }),
   ]);
 }

@@ -8,6 +8,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { isNovelInLibrary } from "@/lib/reader-library";
 import { LibraryButton } from "@/components/LibraryButton";
 import Button from "@/components/Button";
+import DiscussionSection from "@/components/DiscussionSection";
 
 type Props = { params: Promise<{ novelId: string }> };
 
@@ -109,6 +110,7 @@ export default async function NovelPage({ params }: Props) {
           </div>
         )}
       </section>
+      <DiscussionSection kind="review" novelId={novel.id} authenticated={Boolean(user)} initialUsername={user?.username} />
     </main>
   );
 }

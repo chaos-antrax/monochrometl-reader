@@ -50,6 +50,7 @@ export default async function ReaderPage({ params }: Props) {
       chapters={novel.chapters}
       initialSettings={settings}
       authenticated={Boolean(user)}
+      initialUsername={user?.username}
       initialScrollProgress={progress?.chapterId === chapter.id ? progress.scrollProgress : 0}
     />
   );

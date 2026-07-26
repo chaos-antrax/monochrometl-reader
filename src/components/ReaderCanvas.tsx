@@ -22,6 +22,7 @@ import { READER_SETTINGS_STORAGE_KEY } from "@/lib/constants";
 import useAnimatedPresence from "@/hooks/useAnimatedPresence";
 import { authenticatedFetch, responseError } from "@/lib/client-api";
 import { notify } from "@/lib/toast";
+import DiscussionSection from "@/components/DiscussionSection";
 
 const backgrounds: {
   id: ReaderBackground;
@@ -84,6 +85,7 @@ type Props = {
   chapters: PublicChapterSummary[];
   initialSettings: ReaderSettings;
   authenticated: boolean;
+  initialUsername?: string;
   initialScrollProgress: number;
 };
 
@@ -92,6 +94,7 @@ export default function ReaderCanvas({
   chapters,
   initialSettings,
   authenticated,
+  initialUsername,
   initialScrollProgress,
 }: Props) {
   const [settings, setSettings] = useState<ReaderSettings>(initialSettings);
@@ -228,6 +231,8 @@ export default function ReaderCanvas({
           <ChapterNavigation chapter={chapter} />
         </div>
       </div>
+
+      <DiscussionSection kind="comment" novelId={chapter.novelId} chapterId={chapter.id} authenticated={authenticated} initialUsername={initialUsername} lazy />
 
       <div className="fixed right-4 sm:right-7 bottom-5 sm:bottom-7 z-40 flex flex-col gap-2">
         <button
