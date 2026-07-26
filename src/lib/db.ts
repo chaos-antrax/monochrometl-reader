@@ -37,5 +37,9 @@ async function ensureIndexes(database: Db) {
     database.collection('readerReviews').createIndex({ userId: 1, novelId: 1 }, { unique: true, partialFilterExpression: { topLevel: true }, name: 'reader_review_user_novel' }),
     database.collection('readerComments').createIndex({ chapterId: 1, createdAt: -1 }, { name: 'reader_comments_latest' }),
     database.collection('readerComments').createIndex({ parentId: 1, createdAt: 1 }, { name: 'reader_comment_replies' }),
+    database.collection('readerContributionRequests').createIndex({ id: 1 }, { unique: true, name: 'reader_contribution_request_id' }),
+    database.collection('readerContributionRequests').createIndex({ userId: 1, createdAt: -1 }, { name: 'reader_contribution_requests_user' }),
+    database.collection('readerContributionRequests').createIndex({ status: 1, createdAt: 1 }, { name: 'reader_contribution_requests_admin_inbox' }),
+    database.collection('readerContributionMessages').createIndex({ requestId: 1, createdAt: 1 }, { name: 'reader_contribution_messages_thread' }),
   ]);
 }

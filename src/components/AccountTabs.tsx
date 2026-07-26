@@ -8,6 +8,7 @@ import type { ReaderSettings } from "@/types/reader";
 import type { ReaderUser } from "@/types/user";
 import UsernameSettings from "@/components/UsernameSettings";
 import ActivityPanel from "@/components/ActivityPanel";
+import ContributePanel from "@/components/ContributePanel";
 
 export default function AccountTabs({
   user,
@@ -18,27 +19,33 @@ export default function AccountTabs({
   joined: string | null;
   settings: ReaderSettings;
 }) {
-  const [tab, setTab] = useState<"profile" | "preferences" | "activity">("profile");
+  const [tab, setTab] = useState<"profile" | "preferences" | "activity" | "contribute">("profile");
   return (
     <>
-      <div className="flex gap-8 border-b border-foreground/10 font-inter text-xs uppercase tracking-[0.18em] font-extralight">
+      <div className="flex gap-5 overflow-x-auto border-b border-foreground/10 font-inter text-xs uppercase tracking-[0.18em] font-extralight md:gap-8">
         <button
           onClick={() => setTab("profile")}
-          className={`pb-3 cursor-pointer ${tab === "profile" ? "border-b border-foreground" : ""}`}
+          className={`shrink-0 pb-3 cursor-pointer ${tab === "profile" ? "border-b border-foreground" : ""}`}
         >
           Profile
         </button>
         <button
           onClick={() => setTab("preferences")}
-          className={`pb-3 cursor-pointer ${tab === "preferences" ? "border-b border-foreground" : ""}`}
+          className={`shrink-0 pb-3 cursor-pointer ${tab === "preferences" ? "border-b border-foreground" : ""}`}
         >
           Preferences
         </button>
         <button
           onClick={() => setTab("activity")}
-          className={`pb-3 cursor-pointer ${tab === "activity" ? "border-b border-foreground" : ""}`}
+          className={`shrink-0 pb-3 cursor-pointer ${tab === "activity" ? "border-b border-foreground" : ""}`}
         >
           Activity
+        </button>
+        <button
+          onClick={() => setTab("contribute")}
+          className={`shrink-0 pb-3 cursor-pointer ${tab === "contribute" ? "border-b border-foreground" : ""}`}
+        >
+          Contribute
         </button>
       </div>
       {tab === "profile" ? (
@@ -128,8 +135,10 @@ export default function AccountTabs({
           </p>
           <AccountPreferences initialSettings={settings} />
         </section>
-      ) : (
+      ) : tab === "activity" ? (
         <ActivityPanel />
+      ) : (
+        <ContributePanel />
       )}
     </>
   );
