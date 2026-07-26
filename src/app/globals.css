@@ -37,6 +37,14 @@
   --theme-color: #f7f7f5;
 }
 
+[data-theme='light'] .font-extralight {
+  font-weight: 300;
+}
+
+[data-theme='light'] [class~='border-white/7'] {
+  border-color: color-mix(in srgb, var(--foreground) 18%, transparent);
+}
+
 [data-theme='dark'] {
   --background: #0a0a0a;
   --foreground: #ededed;
