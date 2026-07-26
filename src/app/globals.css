@@ -72,6 +72,7 @@ body *, body *::before, body *::after {
 :where(a, button, [role='button']) { -webkit-tap-highlight-color: transparent; }
 :where(a, button, [role='button']):not(:disabled):active { transform: scale(.975); }
 :where(button, a, input, select, textarea):focus-visible { outline: 1px solid currentColor; outline-offset: 4px; }
+:where(input, select, textarea):focus-visible { outline: none; outline-offset: 0; }
 :where(button, a):not(:disabled):hover { filter: brightness(.94); }
 [data-theme='dark'] :where(button, a):not(:disabled):hover { filter: brightness(1.14); }
 
