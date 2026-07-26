@@ -40,6 +40,6 @@ async function ensureIndexes(database: Db) {
     database.collection('readerContributionRequests').createIndex({ id: 1 }, { unique: true, name: 'reader_contribution_request_id' }),
     database.collection('readerContributionRequests').createIndex({ userId: 1, createdAt: -1 }, { name: 'reader_contribution_requests_user' }),
     database.collection('readerContributionRequests').createIndex({ status: 1, createdAt: 1 }, { name: 'reader_contribution_requests_admin_inbox' }),
-    database.collection('readerContributionMessages').createIndex({ requestId: 1, createdAt: 1 }, { name: 'reader_contribution_messages_thread' }),
+    database.collection('readerContributionMessages').createIndex({ requestId: 1, createdAt: 1, id: 1 }, { name: 'reader_contribution_messages_thread_cursor' }),
   ]);
 }

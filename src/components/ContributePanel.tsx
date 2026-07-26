@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Check, Clock3, MessageCircle, Pencil, Send, X } from 'lucide-react';
 import { authenticatedFetch, responseError } from '@/lib/client-api';
 import { notify } from '@/lib/toast';
@@ -237,13 +237,34 @@ function ContributionChat({ request, onClose }: { request: RequestItem; onClose:
   const [body, setBody] = useState('');
   const [loading, setLoading] = useState(true);
   const [pending, setPending] = useState(false);
+  const cursorRef = useRef<{ createdAt: string; id: string } | null>(null);
+  const pollingRef = useRef(false);
 
-  const loadMessages = useCallback(async (quiet = false) => {
-    const response = await authenticatedFetch(`/api/contributions/${request.id}/messages`);
+  const loadMessages = useCallback(async (incremental = false) => {
+    if (pollingRef.current) return;
+    pollingRef.current = true;
+    const cursor = incremental ? cursorRef.current : null;
+    const query = cursor
+      ? `?after=${encodeURIComponent(cursor.createdAt)}&afterId=${encodeURIComponent(cursor.id)}`
+      : '';
+    try {
+    const response = await authenticatedFetch(`/api/contributions/${request.id}/messages${query}`);
     if (!response.ok) throw new Error(await responseError(response, 'Unable to load chat.'));
     const result = await response.json();
-    setMessages(result.items);
-    if (!quiet) setLoading(false);
+    const incoming = result.items as MessageItem[];
+    if (incoming.length) {
+      const latest = incoming[incoming.length - 1];
+      cursorRef.current = { createdAt: latest.createdAt, id: latest.id };
+    }
+    setMessages((current) => {
+      if (!incremental) return incoming;
+      const known = new Set(current.map((message) => message.id));
+      return [...current, ...incoming.filter((message) => !known.has(message.id))];
+    });
+    if (!incremental) setLoading(false);
+    } finally {
+      pollingRef.current = false;
+    }
   }, [request.id]);
 
   useEffect(() => {

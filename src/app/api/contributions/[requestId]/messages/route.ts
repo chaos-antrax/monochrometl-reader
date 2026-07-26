@@ -2,6 +2,7 @@ import { randomUUID } from 'crypto';
 import { z } from 'zod';
 import { getCurrentUser } from '@/lib/auth';
 import { getDatabase } from '@/lib/db';
+import type { Filter } from 'mongodb';
 import type { ContributionMessage, ContributionRequest } from '@/types/contribution';
 
 const messageSchema = z.object({
@@ -20,7 +21,7 @@ async function getOpenRequest(requestId: string, userId: string) {
 }
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: RouteContext<'/api/contributions/[requestId]/messages'>,
 ) {
   const user = await getCurrentUser();
@@ -29,10 +30,26 @@ export async function GET(
   if (!(await getOpenRequest(requestId, user.id))) {
     return Response.json({ error: 'Chat is not open yet.' }, { status: 403 });
   }
+  const url = new URL(request.url);
+  const afterValue = url.searchParams.get('after');
+  const afterId = url.searchParams.get('afterId');
+  const filter: Filter<ContributionMessage> = { requestId };
+  if (afterValue) {
+    const after = new Date(afterValue);
+    if (Number.isNaN(after.getTime())) {
+      return Response.json({ error: 'Invalid message cursor.' }, { status: 400 });
+    }
+    filter.$or = afterId
+      ? [
+          { createdAt: { $gt: after } },
+          { createdAt: after, id: { $gt: afterId } },
+        ]
+      : [{ createdAt: { $gt: after } }];
+  }
   const items = await (await getDatabase())
     .collection<ContributionMessage>('readerContributionMessages')
-    .find({ requestId }, { projection: { _id: 0 } })
-    .sort({ createdAt: 1 })
+    .find(filter, { projection: { _id: 0 } })
+    .sort({ createdAt: 1, id: 1 })
     .toArray();
   return Response.json({
     items: items.map((item) => ({ ...item, createdAt: item.createdAt.toISOString() })),
