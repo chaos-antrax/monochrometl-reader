@@ -20,6 +20,8 @@ import type {
 } from "@/types/reader";
 import { READER_SETTINGS_STORAGE_KEY } from "@/lib/constants";
 import useAnimatedPresence from "@/hooks/useAnimatedPresence";
+import { authenticatedFetch, responseError } from "@/lib/client-api";
+import { notify } from "@/lib/toast";
 
 const backgrounds: {
   id: ReaderBackground;
@@ -97,6 +99,7 @@ export default function ReaderCanvas({
   const [panel, setPanel] = useState<"settings" | "chapters" | null>(null);
   const panelPresence = useAnimatedPresence(panel);
   const hydrated = useRef(false);
+  const progressErrorShown = useRef(false);
   const { resolvedTheme, setTheme } = useTheme();
   const dark = resolvedTheme === "dark";
   const palette =
@@ -137,11 +140,11 @@ export default function ReaderCanvas({
       return;
     }
     const timer = setTimeout(() => {
-      fetch("/api/settings", {
+      authenticatedFetch("/api/settings", {
         method: "PUT",
         headers: { "content-type": "application/json" },
         body: JSON.stringify(settings),
-      });
+      }).then(async (response) => { if (!response.ok) throw new Error(await responseError(response, 'Unable to save reader preferences.')); }).catch((error) => notify(error instanceof Error ? error.message : 'Unable to save reader preferences.', 'error'));
     }, 500);
     return () => clearTimeout(timer);
   }, [settings, authenticated, localReady]);
@@ -162,7 +165,7 @@ export default function ReaderCanvas({
     const send = () => {
       const height = document.documentElement.scrollHeight - window.innerHeight;
       const scrollProgress = height > 0 ? window.scrollY / height : 1;
-      fetch(`/api/progress/${chapter.novelId}`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ chapterId: chapter.id, chapterOrder: chapter.order, scrollProgress }), keepalive: true });
+      authenticatedFetch(`/api/progress/${chapter.novelId}`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ chapterId: chapter.id, chapterOrder: chapter.order, scrollProgress }), keepalive: true }).then(async (response) => { if (!response.ok) throw new Error(await responseError(response, 'Unable to save reading position.')); progressErrorShown.current = false; }).catch((error) => { if (progressErrorShown.current) return; progressErrorShown.current = true; notify(error instanceof Error ? error.message : 'Unable to save reading position.', 'error'); });
     };
     const schedule = () => { clearTimeout(timer); timer = setTimeout(send, 700); };
     window.addEventListener('scroll', schedule, { passive: true });

@@ -137,11 +137,13 @@ export async function getPublishedChapter(
   };
 }
 export async function getPublishedChapterPaths() {
-  const chapters = await (
-    await getDatabase()
-  )
+  const db = await getDatabase();
+  const novelIds = await db.collection<NovelDoc>('novels')
+    .distinct('id', { published: true });
+  if (!novelIds.length) return [];
+  const chapters = await db
     .collection<ChapterDoc>("chapters")
-    .find(chapterFilter, { projection: { _id: 0, novelId: 1, id: 1 } })
+    .find({ ...chapterFilter, novelId: { $in: novelIds } }, { projection: { _id: 0, novelId: 1, id: 1 } })
     .toArray();
   return chapters.map(({ novelId, id }) => ({ novelId, chapterId: id }));
 }

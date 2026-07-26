@@ -29,5 +29,7 @@ async function ensureIndexes(database: Db) {
     database.collection('readerProgress').createIndex({ userId: 1, novelId: 1 }, { unique: true, name: 'reader_progress_user_novel' }),
     database.collection('readerProgress').createIndex({ userId: 1, updatedAt: -1 }, { name: 'reader_progress_recent' }),
     database.collection('readerSettings').createIndex({ userId: 1 }, { unique: true, name: 'reader_settings_user' }),
+    database.collection('users').createIndex({ email: 1 }, { unique: true }),
+    database.collection('authRateLimits').createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0, name: 'auth_rate_limits_ttl' }),
   ]);
 }

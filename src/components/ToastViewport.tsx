@@ -1,0 +1,18 @@
+'use client';
+import { useEffect, useState } from 'react';
+import { Check, CircleAlert, Info, X } from 'lucide-react';
+import { TOAST_EVENT, type ToastDetail } from '@/lib/toast';
+
+export default function ToastViewport() {
+  const [toasts, setToasts] = useState<ToastDetail[]>([]);
+  useEffect(() => {
+    const receive = (event: Event) => {
+      const toast = (event as CustomEvent<ToastDetail>).detail;
+      setToasts((current) => [...current.slice(-2), toast]);
+      window.setTimeout(() => setToasts((current) => current.filter((item) => item.id !== toast.id)), 4200);
+    };
+    window.addEventListener(TOAST_EVENT, receive);
+    return () => window.removeEventListener(TOAST_EVENT, receive);
+  }, []);
+  return <div aria-live='polite' aria-atomic='false' className='pointer-events-none fixed right-4 top-20 z-[120] flex w-[min(calc(100vw-2rem),24rem)] flex-col gap-2'>{toasts.map((toast) => <div key={toast.id} role={toast.kind === 'error' ? 'alert' : 'status'} className={`toast-item pointer-events-auto grid grid-cols-[auto_1fr_auto] items-start gap-3 border bg-background/95 p-4 text-foreground shadow-xl backdrop-blur-xl ${toast.kind === 'error' ? 'border-red-500/35' : 'border-foreground/15'}`}>{toast.kind === 'success' ? <Check size={17} /> : toast.kind === 'error' ? <CircleAlert size={17} className='text-red-500' /> : <Info size={17} />}<p className='font-inter text-xs font-light leading-5'>{toast.message}</p><button aria-label='Dismiss notification' onClick={() => setToasts((current) => current.filter((item) => item.id !== toast.id))} className='cursor-pointer opacity-60 hover:opacity-100'><X size={15} /></button></div>)}</div>;
+}

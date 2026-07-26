@@ -5,6 +5,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import ThemeProvider from "@/components/ThemeProvider";
 import GlobalThemeToggle from "@/components/GlobalThemeToggle";
+import ToastViewport from "@/components/ToastViewport";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({
@@ -45,6 +46,7 @@ export default function RootLayout({
             {children}
           </ViewTransition>
           <GlobalThemeToggle />
+          <ToastViewport />
         </ThemeProvider>
       </body>
     </html>

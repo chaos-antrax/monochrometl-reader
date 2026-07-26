@@ -7,6 +7,11 @@ export async function getProgress(userId: string, novelId: string) {
 }
 export async function saveProgress(input: Omit<ReaderProgress, "updatedAt">) {
   const db = await getDatabase();
+  const novel = await db.collection('novels').findOne(
+    { id: input.novelId, published: true },
+    { projection: { _id: 1 } },
+  );
+  if (!novel) throw new Error('Novel not found.');
   const chapter = await db
     .collection("chapters")
     .findOne(
