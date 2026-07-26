@@ -4,8 +4,13 @@ import Button from "@/components/Button";
 import MobileNav from "@/components/MobileNav";
 import ThemeLogo from "@/components/ThemeLogo";
 import { getCurrentUser } from "@/lib/auth";
+import { DEFAULT_READER_SETTINGS } from "@/lib/constants";
+import { getReaderSettings } from "@/lib/reader-settings";
 const Header = async () => {
   const user = await getCurrentUser();
+  const settings = user
+    ? await getReaderSettings(user.id)
+    : DEFAULT_READER_SETTINGS;
   return (
     <header className="sticky top-0 z-50 border-b border-foreground/[0.06] bg-background/75 backdrop-blur-3xl">
       <nav className="flex justify-between items-center font-lora p-4">
@@ -25,7 +30,7 @@ const Header = async () => {
             <Button href="/signin">Sign In</Button>
           )}
         </div>
-        <MobileNav user={user} />
+        <MobileNav user={user} settings={settings} />
       </nav>
     </header>
   );

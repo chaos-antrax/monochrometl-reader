@@ -110,8 +110,7 @@ body *, body *::before, body *::after {
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
-  /* Masks the background color with an inset shadow */
-  -webkit-box-shadow: 0 0 0px 1000px #0a0a0a inset !important;
-  /* Controls the typed text color inside the autofilled input */
-  -webkit-text-fill-color: #ffffff !important;
+  -webkit-box-shadow: 0 0 0 1000px var(--background) inset !important;
+  -webkit-text-fill-color: var(--foreground) !important;
+  caret-color: var(--foreground);
 }

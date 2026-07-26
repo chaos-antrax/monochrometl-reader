@@ -1,7 +1,9 @@
 import Button from "@/components/Button";
 import Image from "next/image";
+import { getCurrentUser } from "@/lib/auth";
 
-export default function Home() {
+export default async function Home() {
+  const user = await getCurrentUser();
   return (
     <div>
       <main className="xl:items-center justify-center max-w-3xl xl:max-w-full flex flex-col gap-6 xl:text-center px-10 md:px-16 mt-30 md:mt-56">
@@ -16,12 +18,25 @@ export default function Home() {
         ~ antrax
       </p>
       <div className="flex gap-4 md:gap-10 xl:justify-center mt-10 px-10 md:px-16">
-        <Button btnType="block" href="/novels" className="block md:hidden">
-          Browse
-        </Button>
-        <Button btnType="block" href="/signup">
-          Sign Up
-        </Button>
+        {user ? (
+          <>
+            <Button btnType="block" href="/novels">
+              Browse
+            </Button>
+            <Button btnType="block" href="/library">
+              Library
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button btnType="block" href="/novels" className="block md:hidden">
+              Browse
+            </Button>
+            <Button btnType="block" href="/signup">
+              Sign Up
+            </Button>
+          </>
+        )}
       </div>
     </div>
   );

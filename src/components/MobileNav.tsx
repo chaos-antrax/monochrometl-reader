@@ -13,11 +13,13 @@ import {
 } from "lucide-react";
 import LogoutButton from "@/components/LogoutButton";
 import ThemeLogo from "@/components/ThemeLogo";
+import ThemeToggle from "@/components/ThemeToggle";
 import useAnimatedPresence from "@/hooks/useAnimatedPresence";
+import type { ReaderSettings } from "@/types/reader";
 import type { ReaderUser } from "@/types/user";
 
 const subscribe = () => () => {};
-export default function MobileNav({ user }: { user: ReaderUser | null }) {
+export default function MobileNav({ user, settings }: { user: ReaderUser | null; settings: ReaderSettings }) {
   const [open, setOpen] = useState(false);
   const mounted = useSyncExternalStore(
     subscribe,
@@ -118,11 +120,18 @@ export default function MobileNav({ user }: { user: ReaderUser | null }) {
             </Link>
           ))}
         </nav>
-        {user && (
-          <div className="p-4 border-t border-foreground/10">
+        <div className="border-t border-foreground/10 p-4">
+          <ThemeToggle
+            initialSettings={settings}
+            authenticated={Boolean(user)}
+            variant="mobile"
+          />
+          {user && (
+            <div className="mt-2 border-t border-foreground/10 pt-4">
             <LogoutButton variant="mobile" onLoggedOut={close} />
+            </div>
+          )}
           </div>
-        )}
       </aside>
     </>
   );
