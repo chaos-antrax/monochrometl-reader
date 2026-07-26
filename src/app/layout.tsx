@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import ThemeProvider from "@/components/ThemeProvider";
 import GlobalThemeToggle from "@/components/GlobalThemeToggle";
 import ToastViewport from "@/components/ToastViewport";
+import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({
@@ -15,8 +16,13 @@ const geistMono = Geist_Mono({
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
 const lora = Lora({ variable: "--font-lora", subsets: ["latin"] });
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
-  title: { default: "Monochrome Translations", template: "%s | Monochrome Translations" },
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  ),
+  title: {
+    default: "Monochrome Translations",
+    template: "%s | Monochrome Translations",
+  },
   description: "Minimal platform dedicated for edited AI fan translations.",
   alternates: { canonical: "/" },
   openGraph: {
@@ -48,6 +54,7 @@ export default function RootLayout({
           <GlobalThemeToggle />
           <ToastViewport />
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
