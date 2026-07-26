@@ -22,23 +22,10 @@ import { READER_SETTINGS_STORAGE_KEY } from "@/lib/constants";
 import useAnimatedPresence from "@/hooks/useAnimatedPresence";
 import { authenticatedFetch, responseError } from "@/lib/client-api";
 import { notify } from "@/lib/toast";
+import { READER_BACKGROUNDS } from "@/lib/reader-palettes";
 import DiscussionSection from "@/components/DiscussionSection";
 
-const backgrounds: {
-  id: ReaderBackground;
-  label: string;
-  light: string;
-  dark: string;
-}[] = [
-  { id: "paper", label: "Paper", light: "#f7f4ed", dark: "#1d1c1a" },
-  { id: "white", label: "White", light: "#ffffff", dark: "#111111" },
-  { id: "warm", label: "Warm", light: "#fbf1df", dark: "#211b14" },
-  { id: "sepia", label: "Sepia", light: "#efe0c8", dark: "#251d15" },
-  { id: "sage", label: "Sage", light: "#eef3ea", dark: "#151d16" },
-  { id: "mist", label: "Mist", light: "#eef2f5", dark: "#14181c" },
-  { id: "charcoal", label: "Charcoal", light: "#e9e9e6", dark: "#202020" },
-  { id: "black", label: "Black", light: "#f4f4f4", dark: "#050505" },
-];
+const backgrounds = READER_BACKGROUNDS;
 const fontSizes = [15, 16, 17, 18, 19, 20, 22, 24, 26];
 const lineHeights = [1.4, 1.55, 1.7, 1.85, 2];
 
@@ -347,8 +334,8 @@ export default function ReaderCanvas({
                 {backgrounds.map((item) => (
                   <button
                     key={item.id}
-                    title={item.label}
-                    aria-label={item.label}
+                    title={dark ? item.darkLabel : item.label}
+                    aria-label={dark ? item.darkLabel : item.label}
                     onClick={() => update("background", item.id)}
                     className="cursor-pointer"
                   >
@@ -356,7 +343,7 @@ export default function ReaderCanvas({
                       className={`block h-10 border ${settings.background === item.id ? "ring-1 ring-current ring-offset-2" : ""}`}
                       style={{ background: dark ? item.dark : item.light }}
                     />
-                    <span className="block text-[10px] mt-2">{item.label}</span>
+                    <span className="block text-[10px] mt-2">{dark ? item.darkLabel : item.label}</span>
                   </button>
                 ))}
               </div>
