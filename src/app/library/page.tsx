@@ -6,7 +6,7 @@ import LibraryCard from '@/components/LibraryCard';
 import { getCurrentUser } from '@/lib/auth';
 import { getReaderLibrary } from '@/lib/reader-library';
 
-export const metadata:Metadata={title:'Your Library | Monochrome Translations',description:'Your saved novels on Monochrome Translations.'};
+export const metadata:Metadata={title:'Your Library',description:'Your saved novels on Monochrome Translations.',robots:{index:false,follow:false}};
 
 export default async function LibraryPage(){const user=await getCurrentUser();if(!user)redirect('/signin');const novels=await getReaderLibrary(user.id);return <main className='pb-16 md:pb-24'>
   <header className='px-10 md:px-24 xl:px-36 pt-14 md:pt-20 pb-10 md:pb-12'><div className='flex items-end justify-between gap-8'><div><p className='font-inter text-xs uppercase tracking-[0.22em] font-extralight'>Saved for later</p><h1 className='font-lora text-5xl md:text-4xl mt-4'>Your Library</h1></div><div className='hidden md:flex items-center gap-3 font-inter font-extralight text-sm'><BookMarked size={19} strokeWidth={1}/><span>{novels.length} {novels.length===1?'title':'titles'}</span></div></div></header>

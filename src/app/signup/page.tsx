@@ -3,7 +3,8 @@ import { redirect } from "next/navigation";
 import AuthForm from "@/components/AuthForm";
 import { getCurrentUser } from "@/lib/auth";
 export const metadata: Metadata = {
-  title: "Sign up | Monochrome Translations",
+  title: "Sign up",
+  robots: { index: false, follow: false },
 };
 export default async function SignUp() {
   if (await getCurrentUser()) redirect("/account");

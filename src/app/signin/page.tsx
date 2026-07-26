@@ -3,7 +3,8 @@ import { redirect } from "next/navigation";
 import AuthForm from "@/components/AuthForm";
 import { getCurrentUser } from "@/lib/auth";
 export const metadata: Metadata = {
-  title: "Sign in | Monochrome Translations",
+  title: "Sign in",
+  robots: { index: false, follow: false },
 };
 export default async function SignIn({ searchParams }: { searchParams: Promise<{ next?: string; reason?: string }> }) {
   if (await getCurrentUser()) redirect("/account");

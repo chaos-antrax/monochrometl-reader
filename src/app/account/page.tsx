@@ -5,7 +5,8 @@ import AccountTabs from "@/components/AccountTabs";
 import { getCurrentUser } from "@/lib/auth";
 import { getReaderSettings } from "@/lib/reader-settings";
 export const metadata: Metadata = {
-  title: "Account | Monochrome Translations",
+  title: "Account",
+  robots: { index: false, follow: false },
 };
 export default async function AccountPage() {
   const user = await getCurrentUser();
