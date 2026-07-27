@@ -7,14 +7,20 @@ declare global {
 function connect() {
   const uri = process.env.MONGODB_URI;
   if (!uri) throw new Error("MONGODB_URI is not configured.");
-  return new MongoClient(uri).connect();
+  return new MongoClient(uri, {
+    maxPoolSize: 5,
+    minPoolSize: 0,
+    maxIdleTimeMS: 30_000,
+  }).connect();
 }
 export function getMongoClient() {
-  if (process.env.NODE_ENV === "development") {
-    global.monochromeMongoClientPromise ??= connect();
-    return global.monochromeMongoClientPromise;
+  if (!globalThis.monochromeMongoClientPromise) {
+    globalThis.monochromeMongoClientPromise = connect().catch((error) => {
+      globalThis.monochromeMongoClientPromise = undefined;
+      throw error;
+    });
   }
-  return connect();
+  return globalThis.monochromeMongoClientPromise;
 }
 export async function getDatabase(): Promise<Db> {
   const database = (await getMongoClient()).db(databaseName);
