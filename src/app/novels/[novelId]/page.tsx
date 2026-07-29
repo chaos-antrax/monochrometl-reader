@@ -9,6 +9,7 @@ import { isNovelInLibrary } from "@/lib/reader-library";
 import { LibraryButton } from "@/components/LibraryButton";
 import Button from "@/components/Button";
 import DiscussionSection from "@/components/DiscussionSection";
+import ChapterList from "@/components/ChapterList";
 
 type Props = { params: Promise<{ novelId: string }> };
 
@@ -71,38 +72,8 @@ export default async function NovelPage({ params }: Props) {
       </section>
 
       <section className="mt-10 p-4 md:p-10">
-        <div className="flex gap-4">
-          <h2 className="font-lora text-2xl px-2 md:px-0">Chapters</h2>
-          <span className="md:hidden">{novel.chapterCount}</span>
-        </div>
         {novel.chapters.length ? (
-          <ol className="flex flex-col gap-1 mt-5 md:mt-10">
-            {novel.chapters.map((chapter) => (
-              <li key={chapter.id}>
-                <Link
-                  href={`/novels/${novel.id}/read/${chapter.id}`}
-                  className="flex gap-6 items-center justify-between font-lora font-light tracking-wide p-4 bg-foreground/4"
-                >
-                  <strong className="text-sm line-clamp-1 md:text-lg">
-                    {chapter.title}
-                  </strong>
-                  <span className="text-sm md:text-md min-w-fit">
-                    {chapter.publishedAt
-                      ? new Date(chapter.publishedAt).toLocaleDateString(
-                          "en-US",
-                          {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          },
-                        )
-                      : "Unpublished"}
-                  </span>
-                  {/* <ArrowRight size={18} /> */}
-                </Link>
-              </li>
-            ))}
-          </ol>
+          <ChapterList novelId={novel.id} chapters={novel.chapters} />
         ) : (
           <div className="items-center justify-center font-inter flex flex-col gap-4 mt-40">
             <BookOpen size={64} strokeWidth={0.5} />
