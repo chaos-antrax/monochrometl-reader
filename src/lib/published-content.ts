@@ -22,6 +22,14 @@ type ChapterDoc = {
   publishedVersion: number;
   publishedAt?: string;
 };
+export type PublishedFeedChapter = {
+  id: string;
+  novelId: string;
+  novelTitle: string;
+  title: string;
+  order: number;
+  publishedAt: string;
+};
 const novelProjection = {
   _id: 0,
   id: 1,
@@ -146,4 +154,49 @@ export async function getPublishedChapterPaths() {
     .find({ ...chapterFilter, novelId: { $in: novelIds } }, { projection: { _id: 0, novelId: 1, id: 1 } })
     .toArray();
   return chapters.map(({ novelId, id }) => ({ novelId, chapterId: id }));
+}
+
+export async function getPublishedFeedChapters(
+  limit = 100,
+): Promise<PublishedFeedChapter[]> {
+  const db = await getDatabase();
+  const chapters = await db
+    .collection<ChapterDoc>("chapters")
+    .find(
+      {
+        ...chapterFilter,
+        publishedAt: { $type: "string" },
+      } as Filter<ChapterDoc>,
+      { projection: chapterProjection },
+    )
+    .sort({ publishedAt: -1, order: -1 })
+    .limit(Math.max(1, Math.min(limit, 250)))
+    .toArray();
+
+  if (!chapters.length) return [];
+
+  const novels = await db
+    .collection<NovelDoc>("novels")
+    .find(
+      {
+        id: { $in: [...new Set(chapters.map((chapter) => chapter.novelId))] },
+        published: true,
+      },
+      { projection: { _id: 0, id: 1, title: 1 } },
+    )
+    .toArray();
+  const novelTitles = new Map(novels.map((novel) => [novel.id, novel.title]));
+
+  return chapters.flatMap((chapter) => {
+    const novelTitle = novelTitles.get(chapter.novelId);
+    if (!novelTitle || !chapter.publishedAt) return [];
+    return [{
+      id: chapter.id,
+      novelId: chapter.novelId,
+      novelTitle,
+      title: chapter.title,
+      order: chapter.order,
+      publishedAt: chapter.publishedAt,
+    }];
+  });
 }

@@ -24,7 +24,10 @@ export const metadata: Metadata = {
     template: "%s | Monochrome Translations",
   },
   description: "Minimal platform dedicated for edited AI fan translations.",
-  alternates: { canonical: "/" },
+  alternates: {
+    canonical: "/",
+    types: { "application/rss+xml": "/rss.xml" },
+  },
   openGraph: {
     type: "website",
     siteName: "Monochrome Translations",
