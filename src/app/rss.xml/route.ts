@@ -45,8 +45,7 @@ export async function GET(request: Request) {
       const chapterUrl =
         `${origin}/novels/${encodeURIComponent(chapter.novelId)}` +
         `/read/${encodeURIComponent(chapter.id)}`;
-      const itemTitle =
-        `${chapter.novelTitle} - Chapter ${chapter.order}: ${chapter.title}`;
+      const itemTitle = `${chapter.novelTitle} - ${chapter.title}`;
       const publishedAt = validDate(chapter.publishedAt);
 
       return [
@@ -54,7 +53,7 @@ export async function GET(request: Request) {
         `      <title>${escapeXml(itemTitle)}</title>`,
         `      <link>${escapeXml(chapterUrl)}</link>`,
         `      <guid isPermaLink="true">${escapeXml(chapterUrl)}</guid>`,
-        `      <description>${escapeXml(`Read chapter ${chapter.order} of ${chapter.novelTitle}.`)}</description>`,
+        `      <description>${escapeXml(`Read ${chapter.title} from ${chapter.novelTitle}.`)}</description>`,
         `      <pubDate>${publishedAt?.toUTCString()}</pubDate>`,
         "    </item>",
       ].join("\n");
