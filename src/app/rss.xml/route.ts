@@ -29,7 +29,10 @@ export async function GET(request: Request) {
   const origin = siteUrlValue.endsWith("/")
     ? siteUrlValue.slice(0, -1)
     : siteUrlValue;
-  const feedUrl = `${origin}/rss.xml`;
+  const requestedFeedUrl = new URL(request.url);
+  requestedFeedUrl.search = "";
+  requestedFeedUrl.hash = "";
+  const feedUrl = requestedFeedUrl.toString();
   const chapters = (await getPublishedFeedChapters()).filter((chapter) =>
     validDate(chapter.publishedAt),
   );
