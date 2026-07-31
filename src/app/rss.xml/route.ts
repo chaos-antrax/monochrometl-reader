@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { getPublishedFeedChapters } from "@/lib/published-content";
 
-const FEED_TITLE = "Monochrome Translations — Latest Chapters";
+const FEED_TITLE = "Monochrome Translations - Latest Chapters";
 const FEED_DESCRIPTION =
   "The latest published novel translation chapters from Monochrome Translations.";
 
@@ -43,7 +43,7 @@ export async function GET(request: Request) {
         `${origin}/novels/${encodeURIComponent(chapter.novelId)}` +
         `/read/${encodeURIComponent(chapter.id)}`;
       const itemTitle =
-        `${chapter.novelTitle} — Chapter ${chapter.order}: ${chapter.title}`;
+        `${chapter.novelTitle} - Chapter ${chapter.order}: ${chapter.title}`;
       const publishedAt = validDate(chapter.publishedAt);
 
       return [
@@ -54,9 +54,9 @@ export async function GET(request: Request) {
         `      <description>${escapeXml(`Read chapter ${chapter.order} of ${chapter.novelTitle}.`)}</description>`,
         `      <pubDate>${publishedAt?.toUTCString()}</pubDate>`,
         "    </item>",
-      ].join("\\n");
+      ].join("\n");
     })
-    .join("\\n");
+    .join("\n");
 
   const xml = [
     '<?xml version="1.0" encoding="UTF-8"?>',
@@ -74,7 +74,7 @@ export async function GET(request: Request) {
     "  </channel>",
     "</rss>",
     "",
-  ].join("\\n");
+  ].join("\n");
   const etag = `"${createHash("sha256").update(xml).digest("base64url")}"`;
   const headers = {
     "Cache-Control": "public, s-maxage=300, stale-while-revalidate=3600",
