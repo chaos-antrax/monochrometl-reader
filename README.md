@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Monochrome Translations Reader
 
-## Getting Started
+A minimalist web reader for community-published novel translations. Browse novels, read chapters in a customizable reading canvas, and join the conversation around each story.
 
-First, run the development server:
+## Features
+
+- Browse published novels and chapters, with chapter sorting.
+- Read chapters with adjustable typography, line spacing, and canvas backgrounds.
+- Choose light or dark mode; reading preferences are saved to your account.
+- Create an account, save novels to your library, and continue from your last reading position.
+- Post and edit reviews, comments, and nested replies. Reviews support ratings.
+- Submit translation or contribution requests and chat with an admin after approval.
+- Get newly published chapters through the RSS 2.0 feed at `/rss.xml`.
+- Responsive mobile navigation, loading states, and accessible interaction feedback.
+
+## Run locally
+
+Requirements: Node.js and a MongoDB database.
+
+```bash
+npm install
+```
+
+Copy `.env.example` to `.env.local` and fill in the values:
+
+```env
+MONGODB_URI=your-mongodb-connection-string
+MONGODB_DB=monochrome_translations
+READER_SESSION_SECRET=your-long-random-secret
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+```
+
+Then start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run dev    # Start the development server
+npm run build  # Create a production build
+npm run start  # Serve the production build
+npm run lint   # Run ESLint
+```
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Novel and chapter content is read from MongoDB collections shared with the publishing/admin application. Configure both applications to use the same database for published content, accounts, and contribution chat.
